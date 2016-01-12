@@ -3,12 +3,30 @@
 use Symfony\Component\Console\Application;
 use Symfony\Component\Console\Tester\ApplicationTester;
 
-abstract class CommandTestCase extends \PHPUnit_Framework_TestCase
+abstract class CommandTestBase extends \PHPUnit_Framework_TestCase
 {
     /**
      * @var null|\Symfony\Component\Console\Application
      */
     protected $cli;
+
+    /**
+     * @var string
+     */
+    protected static $tmpPath;
+
+    /**
+     * Before the test cases are run, change directory to the tests directory and set the _tmp path
+     * @return void
+     */
+    public static function setUpBeforeClass()
+    {
+        self::$tmpPath = __DIR__ . DIRECTORY_SEPARATOR . '_tmp';
+        if (!file_exists(self::$tmpPath)) {
+            mkdir(self::$tmpPath);
+        }
+        chdir(self::$tmpPath);
+    }
 
     /**
      * @return Application

@@ -1,16 +1,17 @@
 <?php namespace Carbontwelve\AzureMonitor\Providers;
 
+use Carbontwelve\AzureMonitor\Commands\InitCommand;
 use Carbontwelve\AzureMonitor\Monitor;
 use League\Container\ServiceProvider\AbstractServiceProvider;
 use Symfony\Component\Console\Application;
 
 class CommandServiceProvider extends AbstractServiceProvider
 {
-
     /**
      * @var array
      */
     protected $provides = [
+        InitCommand::class,
         Application::class
     ];
 
@@ -23,8 +24,12 @@ class CommandServiceProvider extends AbstractServiceProvider
      */
     public function register()
     {
+        $this->getContainer()->add(InitCommand::class);
+
         $this->getContainer()->add(Application::class, function(){
-            return new Application('AzureMonitor', Monitor::VERSION);
+            $cli = new Application('AzureMonitor', Monitor::VERSION);
+            $cli->add($this->getContainer()->get(InitCommand::class));
+            return $cli;
         });
     }
 }
