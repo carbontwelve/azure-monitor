@@ -1,0 +1,40 @@
+{
+  "name": "carbontwelve/azure-monitor",
+  "description": "PHP CLI tool for monitoring Azure VMs",
+  "keywords": [
+    "azure",
+    "cli"
+  ],
+  "minimum-stability": "dev",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Simon Dann",
+      "email": "simon@photogabble.co.uk"
+    }
+  ],
+  "autoload": {
+    "psr-4": {
+      "Carbontwelve\\AzureMonitor\\": "src"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "Carbontwelve\\AzureMonitor\\Tests\\": "tests"
+    }
+  },
+  "require": {
+    "symfony/console": "^3.0",
+    "microsoft/windowsazure": "*",
+    "league/container": "^2.0"
+  },
+  "require-dev": {
+    "phpunit/phpunit": "5.1.*"
+  },
+  "repositories": [
+    {
+      "type": "pear",
+      "url": "http://pear.php.net"
+    }
+  ]
+}
