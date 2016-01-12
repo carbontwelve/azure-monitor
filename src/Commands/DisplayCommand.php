@@ -6,6 +6,8 @@ use WindowsAzure\Common\ServiceException;
 use WindowsAzure\Common\ServicesBuilder;
 use WindowsAzure\Table\Models\Entity;
 use WindowsAzure\Table\Models\Filters\Filter;
+use WindowsAzure\Table\Models\QueryEntitiesOptions;
+use WindowsAzure\Table\Models\QueryEntitiesResult;
 
 class DisplayCommand extends Command
 {
@@ -36,21 +38,14 @@ class DisplayCommand extends Command
 
         $this->identifyTableName();
 
-        // @todo filter by latest
-
-
-        $filter = new Filter();
-        // Edm.DateTime
-        //$filter->applyQueryString("Edm.DateTime ge '2016-01-11'");
-
-        try {
-            $result = $this->tableRestProxy->queryEntities($this->tableName, $filter);
-            $entities = $result->getEntities();
-        } catch (ServiceException $e) {
-            $this->output->writeln('<error>[!]</error> Exception Code: <comment>' . $e->getCode() . '</comment>');
-            $this->output->writeln($e->getMessage());
-            return $e->getCode();
+        $result = $this->getQueryResult("Timestamp le datetime'2016-01-12T16:12:59' and Timestamp ge datetime'2016-01-12T16:02:59'");
+        if (! $result instanceof QueryEntitiesResult) {
+            return $result;
         }
+
+        $entities = $result->getEntities();
+
+        $n = 1;
 
         /** @var Entity $entity */
         foreach ($entities as $entity) {
@@ -60,7 +55,7 @@ class DisplayCommand extends Command
             $this->output->writeln($vmName . ' [' . $entity->getTimestamp()->format('d-m-Y H:i:s') . ']' . '<info>' . $entity->getPropertyValue('CounterName') . '</info> : <comment>' . $entity->getPropertyValue('Last') . '</comment>');
         }
 
-        $this->info('Hello world!');
+        $this->info( count($entities) . 'rows');
     }
 
     /**
@@ -103,5 +98,19 @@ class DisplayCommand extends Command
         $key = explode('/', $key);
 
         return end($key);
+    }
+
+    private function getQueryResult($filter = '')
+    {
+
+        try {
+            $result = $this->tableRestProxy->queryEntities($this->tableName, $filter);
+            return $result;
+        } catch (ServiceException $e) {
+            $this->output->writeln('<error>[!]</error> Exception Code: <comment>' . $e->getCode() . '</comment>');
+            $this->output->writeln($e->getMessage());
+            return $e->getCode();
+        }
+
     }
 }
