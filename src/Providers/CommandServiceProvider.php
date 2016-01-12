@@ -1,5 +1,6 @@
 <?php namespace Carbontwelve\AzureMonitor\Providers;
 
+use Carbontwelve\AzureMonitor\Commands\DisplayCommand;
 use Carbontwelve\AzureMonitor\Commands\InitCommand;
 use Carbontwelve\AzureMonitor\Monitor;
 use League\Container\ServiceProvider\AbstractServiceProvider;
@@ -25,10 +26,12 @@ class CommandServiceProvider extends AbstractServiceProvider
     public function register()
     {
         $this->getContainer()->add(InitCommand::class);
+        $this->getContainer()->add(DisplayCommand::class);
 
         $this->getContainer()->add(Application::class, function(){
             $cli = new Application('AzureMonitor', Monitor::VERSION);
             $cli->add($this->getContainer()->get(InitCommand::class));
+            $cli->add($this->getContainer()->get(DisplayCommand::class));
             return $cli;
         });
     }
