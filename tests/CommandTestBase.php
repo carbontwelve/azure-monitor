@@ -51,7 +51,7 @@ abstract class CommandTestBase extends \PHPUnit_Framework_TestCase
      */
     protected function runCommand($command, array $arguments = [])
     {
-        $applicationTester = new ApplicationTester($this->cli);
+        $applicationTester = new ApplicationTester($this->getCli());
         $arguments = array_merge(['command' => $command], $arguments);
         $applicationTester->run($arguments);
         return $applicationTester;
